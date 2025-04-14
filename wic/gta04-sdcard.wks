@@ -1,0 +1,9 @@
+# short-description: Create SD-Card image with a boot partition
+# long-description:
+# Create a bootable image that can be written onto an SD card using dd for GTA04.
+# It uses MLO, U-Boot, fat32 boot-partition and ext4 rootfs.
+#
+part /boot --source bootimg-partition --sourceparams="loader=u-boot" --ondisk mmcblk --fstype=vfat --label boot --active --align 1024 --use-uuid --size 32
+part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs --use-uuid --align 4096
+
+bootloader --ptable msdos

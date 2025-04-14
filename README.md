@@ -76,7 +76,7 @@ Add`meta-openphoenux` so that the file looks similar to the example below:
 
 To create a bootable image with default configuration it is enough to define the target machine and invoke `bitbake`:
 
-    export MACHINE=gta04a5
+    export MACHINE=gta04a
     bitbake core-image-minimal
 
 Results are available in **`tmp/deploy/images/gta04a5`**.

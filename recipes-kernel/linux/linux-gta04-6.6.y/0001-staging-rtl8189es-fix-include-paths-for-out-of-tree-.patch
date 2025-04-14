@@ -1,0 +1,83 @@
+From 0ff4641e7b02f0d7de0237f9fc90e40a03a67b5a Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua.mayer@jm0.eu>
+Date: Mon, 14 Apr 2025 22:56:30 +0200
+Subject: [PATCH] staging: rtl8189es: fix include-paths for out-of-tree builds
+
+Building with separate source and build directories fails finding header
+files due to the include path only covering the build directory.
+
+Update Makefiles adding full path to source-tree with include directive.
+
+This fixes compile errors such as:
+  CC [M]  drivers/staging/rtl8189es/core/rtw_cmd.o
+.../kernel-source/drivers/staging/rtl8189es/core/rtw_cmd.c:17:10: fatal error: drv_types.h: No such file or directory
+   17 | #include <drv_types.h>
+      |          ^~~~~~~~~~~~~
+.../kernel-source/drivers/staging/rtl8189es/core/rtw_security.c:17:10: fatal error: drv_types.h: No such file or directory
+   17 | #include <drv_types.h>
+      |          ^~~~~~~~~~~~~
+compilation terminated.
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ drivers/staging/rtl8189es/Makefile                        | 6 +++---
+ drivers/staging/rtl8189es/hal/phydm/phydm.mk              | 4 ++--
+ drivers/staging/rtl8189es/hal/phydm/sd4_phydm_2_kernel.mk | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/staging/rtl8189es/Makefile b/drivers/staging/rtl8189es/Makefile
+index 0ecb8b10a9696..f2d3ef294ce78 100644
+--- a/drivers/staging/rtl8189es/Makefile
++++ b/drivers/staging/rtl8189es/Makefile
+@@ -20,7 +20,7 @@ ifeq ($(GCC_VER_49),1)
+ EXTRA_CFLAGS += -Wno-date-time	# Fix compile error && warning on gcc 4.9 and later
+ endif
+ 
+-EXTRA_CFLAGS += -I$(src)/include
++EXTRA_CFLAGS += -I$(srctree)/$(src)/include
+ 
+ EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
+ EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
+@@ -249,10 +249,10 @@ _HAL_INTFS_FILES :=	hal/hal_intf.o \
+ 			hal/led/hal_$(HCI_NAME)_led.o
+ 
+ 
+-EXTRA_CFLAGS += -I$(src)/platform
++EXTRA_CFLAGS += -I$(srctree)/$(src)/platform
+ _PLATFORM_FILES := platform/platform_ops.o
+ 
+-EXTRA_CFLAGS += -I$(src)/hal/btc
++EXTRA_CFLAGS += -I$(srctree)/$(src)/hal/btc
+ 
+ ########### HAL_RTL8188E #################################
+ ifeq ($(CONFIG_RTL8188E), y)
+diff --git a/drivers/staging/rtl8189es/hal/phydm/phydm.mk b/drivers/staging/rtl8189es/hal/phydm/phydm.mk
+index 88ce6059a03ea..594790e61e064 100755
+--- a/drivers/staging/rtl8189es/hal/phydm/phydm.mk
++++ b/drivers/staging/rtl8189es/hal/phydm/phydm.mk
+@@ -1,4 +1,4 @@
+-EXTRA_CFLAGS += -I$(src)/hal/phydm
++EXTRA_CFLAGS += -I$(srctree)/$(src)/hal/phydm
+ 
+ _PHYDM_FILES := hal/phydm/phydm_debug.o	\
+ 								hal/phydm/phydm_antdiv.o\
+@@ -228,4 +228,4 @@ _PHYDM_FILES += hal/phydm/$(RTL871X)/halhwimg8814b_bb.o\
+ 								hal/phydm/halrf/$(RTL871X)/halrf_iqk_8814b.o \
+ 								hal/phydm/halrf/$(RTL871X)/halrf_dpk_8814b.o\
+ 								hal/phydm/halrf/$(RTL871X)/halrf_rfk_init_8814b.o
+-endif
+\ No newline at end of file
++endif
+diff --git a/drivers/staging/rtl8189es/hal/phydm/sd4_phydm_2_kernel.mk b/drivers/staging/rtl8189es/hal/phydm/sd4_phydm_2_kernel.mk
+index f11c6ac90bf52..09898476ededd 100755
+--- a/drivers/staging/rtl8189es/hal/phydm/sd4_phydm_2_kernel.mk
++++ b/drivers/staging/rtl8189es/hal/phydm/sd4_phydm_2_kernel.mk
+@@ -1,4 +1,4 @@
+-EXTRA_CFLAGS += -I$(src)/hal/phydm
++EXTRA_CFLAGS += -I$(srctree)/$(src)/hal/phydm
+ 
+ _PHYDM_FILES := hal/phydm/phydm_debug.o	\
+ 								hal/phydm/phydm_interface.o\
+-- 
+2.43.0
+
