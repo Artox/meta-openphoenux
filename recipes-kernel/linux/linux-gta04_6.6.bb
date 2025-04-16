@@ -7,10 +7,10 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/linux-gta04-6.6.y:"
 inherit kernel
 require recipes-kernel/linux/linux-yocto.inc
 
+#SRC_URI += "git://github.com/goldelico/letux-kernel.git;branch=letux-6.6.y;protocol=https;nocheckout=1"
 SRC_URI += "git://git.goldelico.com/letux-kernel.git;branch=letux-6.6.y;protocol=https;nocheckout=1 \
             file://0001-staging-rtl8189es-fix-include-paths-for-out-of-tree-.patch \
            "
-#SRC_URI += "git://github.com/goldelico/letux-kernel.git;branch=letux-6.6.y;protocol=https;nocheckout=1"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 LINUX_VERSION ?= "6.6.87"
