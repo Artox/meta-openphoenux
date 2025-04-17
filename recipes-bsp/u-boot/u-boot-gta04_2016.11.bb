@@ -21,15 +21,30 @@ SRC_URI = "git://github.com/OpenPhoenux/gta04-uboot.git;branch=letux-2016.11;pro
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 
+# this u-boot does not use initialenv
+UBOOT_INITIAL_ENV = ""
+
 inherit pkgconfig
 
 do_configure[cleandirs] = "${B}"
 
 require recipes-bsp/u-boot/u-boot.inc
 
-UBOOT_INITIAL_ENV = ""
+DEPENDS += "u-boot-mkimage-native"
 
-# u-boot looks for special boot-script "bootargs.scr"
-UBOOT_ENV = "bootargs"
-UBOOT_ENV_SUFFIX = "scr"
-UBOOT_ENV_SRC_SUFFIX = "txt"
+do_compile:append() {
+    # prepare boot-menu support files
+    ${UBOOT_MKIMAGE} -C none -A ${UBOOT_ARCH} -T script -d ${S}/Letux/boot-scr/boot-gta04.txt ${WORKDIR}/boot.scr
+    gzip -9 -c ${S}/Letux/boot-scr/menu.rgb16 > ${WORKDIR}/menu.rgb16z
+    gzip -9 -c ${S}/Letux/boot-scr/splash.rgb16 > ${WORKDIR}/splash.rgb16z
+}
+
+# TODO: include support files in u-boot package for opkg upgrade at /boot/loader/
+# TODO: install MLO, u-boot.img to /boot/loader/
+
+do_deploy:append() {
+    # deploy boot-menu support files
+    install -m 644 ${WORKDIR}/boot.scr ${DEPLOYDIR}/
+    install -m 644 ${WORKDIR}/menu.rgb16z ${DEPLOYDIR}/
+    install -m 644 ${WORKDIR}/splash.rgb16z ${DEPLOYDIR}/
+}

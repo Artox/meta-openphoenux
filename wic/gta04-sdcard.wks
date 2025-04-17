@@ -1,9 +1,23 @@
-# short-description: Create SD-Card image with a boot partition
+# short-description: Create bootable SD-Card for GTA04 (OMAP3)
 # long-description:
 # Create a bootable image that can be written onto an SD card using dd for GTA04.
-# It uses MLO, U-Boot, fat32 boot-partition and ext4 rootfs.
+# It uses a FAT32 boot partition at sector 128 featuring MLO, U-Boot and a Boot-Menu Script.
 #
-part /boot --source bootimg-partition --sourceparams="loader=u-boot" --ondisk mmcblk --fstype=vfat --label boot --active --align 1024 --use-uuid --size 32
-part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs --use-uuid --align 4096
+# This is different from a common /boot partition in that it does not provide kernel or dtbs,
+# hence generation of extlinux.conf is skipped.
+#
+# Rootfs should provide either "uImage" or "bootargs.scr" at either / or /boot.
+#
+
+# The disk layout used is:
+#  - ---------------
+# | | boot | rootfs |
+#  - ------ --------
+# ^ ^      ^
+# | |      |
+# 0 64kiB  4MiB
+
+part /boot/loader --source bootimg-partition --sourceparams="loader=none" --ondisk mmcblk --fstype=vfat --label loader --active --offset 128s --fixed-size 4032k
+part / --source rootfs --fstype=ext4 --label rootfs --use-uuid --align 4096
 
 bootloader --ptable msdos

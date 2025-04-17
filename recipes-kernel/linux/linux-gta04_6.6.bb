@@ -14,7 +14,7 @@ SRC_URI += "git://git.goldelico.com/letux-kernel.git;branch=letux-6.6.y;protocol
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 LINUX_VERSION ?= "6.6.87"
-LINUX_VERSION_EXTENSION:append = "-letux"
+LINUX_VERSION_EXTENSION = "-letux"
 # tag: letux-6.6.87 1c55b5923949e775d148f2409d225f5bb047c901
 SRCREV = "1c55b5923949e775d148f2409d225f5bb047c901"
 
