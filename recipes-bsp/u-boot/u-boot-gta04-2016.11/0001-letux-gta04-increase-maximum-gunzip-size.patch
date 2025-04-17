@@ -1,0 +1,35 @@
+From d2829f82ac8434bf5af8bdab55971a91dae27ffa Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua.mayer@jm0.eu>
+Date: Thu, 17 Apr 2025 15:31:15 +0200
+Subject: [PATCH] letux-gta04: increase maximum gunzip size
+
+Set SYS_BOOTM_LEN to the same value as am335x_evm to support kernel
+binaries larger than 8MB.
+
+This fixes the below boot failure on large kernels:
+
+Uncompressing Kernel Image ... Error: inflate() returned -5
+Image too large: increase CONFIG_SYS_BOOTM_LEN
+Must RESET board to recover
+resetting ...
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ include/configs/letux_gta04.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/configs/letux_gta04.h b/include/configs/letux_gta04.h
+index b982e97af2..d9d2c5322c 100644
+--- a/include/configs/letux_gta04.h
++++ b/include/configs/letux_gta04.h
+@@ -65,4 +65,7 @@
+  */
+ #define CONFIG_OF_STDOUT_VIA_ALIAS
+ 
++/* Increase max gunzip size */
++#define CONFIG_SYS_BOOTM_LEN		(16 << 20)
++
+ #endif /* __CONFIG_H */
+-- 
+2.43.0
+
