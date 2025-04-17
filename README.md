@@ -76,10 +76,17 @@ Add`meta-openphoenux` so that the file looks similar to the example below:
 
 To create a bootable image with default configuration it is enough to define the target machine and invoke `bitbake`:
 
-    export MACHINE=gta04a
-    bitbake core-image-minimal
+    export MACHINE=gta04
+    bitbake core-image-base
 
-Results are available in **`tmp/deploy/images/gta04a5`**.
+Results are available in **`tmp/deploy/images/gta04`**.
+
+## Install to SD-Card
+
+After a successful build there should exist `*.wic.xz` and `*.wic.bmap` files in `tmp/deploy/images/gta04`.
+These can be programmed to an SD-Card at `/dev/sdX` (replace X with the correct deivce) using `bmaptool`:
+
+    sudo bmaptool copy tmp/deploy/images/gta04/core-image-base-gta04.rootfs.wic.xz /dev/sdX
 
 ## Compatible Layers
 
